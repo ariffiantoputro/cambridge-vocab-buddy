@@ -46,6 +46,13 @@ export const PARTS_OF_SPEECH: PartOfSpeech[] = [
       "The teacher explained the lesson. (Guru itu menjelaskan pelajaran.)",
       "Happiness is important. (Kebahagiaan itu penting.)",
     ],
+    testTips: [
+      "TOEFL Reading: hati-hati noun yang juga bisa jadi verb (research, study, plan, change).",
+      "Linguaskill: kuasai bentuk jamak ireguler (child→children, person→people, datum→data, phenomenon→phenomena).",
+      "Uncountable noun (information, advice, equipment, furniture, news) TIDAK pakai 'a/an' dan TIDAK ada bentuk jamak.",
+      "Compound noun: 'a five-year-old boy' (year tetap singular, dengan tanda hubung).",
+      "Trik hafal cepat: kelompokkan noun per topik (education, environment, technology, business).",
+    ],
     vocab: [
       { word: "family", level: "A2", meaning: "keluarga", synonym: "household", antonym: "stranger", usage: "Digunakan untuk menyebut anggota rumah tangga.", example: "My family lives in Jakarta.", exampleId: "Keluarga saya tinggal di Jakarta." },
       { word: "knowledge", level: "B1", meaning: "pengetahuan", synonym: "wisdom", antonym: "ignorance", usage: "Noun abstrak, uncountable.", example: "Knowledge is power.", exampleId: "Pengetahuan adalah kekuatan." },
@@ -78,6 +85,13 @@ export const PARTS_OF_SPEECH: PartOfSpeech[] = [
     examples: [
       "John is tired. He needs rest. (John lelah. Dia butuh istirahat.)",
       "This book is mine. (Buku ini milikku.)",
+    ],
+    testTips: [
+      "TOEFL Listening: 'who/whom' sering muncul di pertanyaan. Whom = objek (To whom...?).",
+      "Hindari kesalahan klasik: 'Me and John went' ❌ → 'John and I went' ✅.",
+      "Possessive adj. (my, your, his) ≠ Possessive pronoun (mine, yours, his). Bedakan: 'my book' vs 'this book is mine'.",
+      "Reflexive (myself) hanya dipakai bila subjek = objek: 'I hurt myself' ✅, bukan 'myself went' ❌.",
+      "Trik: bayangkan setiap pronoun sebagai 'pengganti' nama orang yang baru disebut.",
     ],
     vocab: [
       { word: "they", level: "A2", meaning: "mereka", synonym: "—", antonym: "—", usage: "Subject pronoun jamak.", example: "They are my friends.", exampleId: "Mereka adalah teman-teman saya." },
@@ -112,6 +126,13 @@ export const PARTS_OF_SPEECH: PartOfSpeech[] = [
       "She writes a letter. (Dia menulis surat.)",
       "They have finished. (Mereka sudah selesai.)",
     ],
+    testTips: [
+      "TOEFL/Linguaskill: hafal 50 verb ireguler paling umum (go-went-gone, take-took-taken, write-wrote-written).",
+      "Subject-verb agreement: 'Everyone IS' (bukan are), 'The news IS' (uncountable), 'Mathematics IS'.",
+      "Verb + gerund: enjoy, avoid, finish, suggest + V-ing. Verb + to-infinitive: want, decide, plan, hope + to V.",
+      "Stative verb (know, love, believe, understand) tidak dipakai dalam continuous tense.",
+      "Phrasal verb sering keluar di Linguaskill: look up, give up, take off, put on, carry out.",
+    ],
     vocab: [
       { word: "achieve", level: "B1", meaning: "mencapai", synonym: "accomplish", antonym: "fail", usage: "Action verb, sering di esai.", example: "She achieved her goal.", exampleId: "Dia mencapai tujuannya." },
       { word: "analyze", level: "B2", meaning: "menganalisis", synonym: "examine", antonym: "ignore", usage: "Akademik, populer di TOEFL.", example: "We need to analyze the data.", exampleId: "Kita perlu menganalisis datanya." },
@@ -144,6 +165,13 @@ export const PARTS_OF_SPEECH: PartOfSpeech[] = [
     examples: [
       "She has a beautiful voice. (Dia memiliki suara yang indah.)",
       "This task is difficult. (Tugas ini sulit.)",
+    ],
+    testTips: [
+      "Urutan adjective (OSASCOMP): Opinion-Size-Age-Shape-Color-Origin-Material-Purpose. Contoh: 'a lovely small old round black Italian leather riding boot'.",
+      "TOEFL Writing: hindari kata umum (good, bad, big). Pakai sinonim level B2-C1 (excellent, severe, substantial).",
+      "-ed vs -ing: 'I am bored' (saya merasa) vs 'The movie is boring' (membuat saya merasa).",
+      "Comparative: 1 suku kata + -er (bigger), 3+ suku kata + more (more beautiful). 2 suku kata bervariasi.",
+      "Adjective 'absolute' (perfect, unique, dead) tidak boleh punya comparative ('more perfect' ❌).",
     ],
     vocab: [
       { word: "happy", level: "A2", meaning: "bahagia", synonym: "joyful", antonym: "sad", usage: "Sifat dasar untuk perasaan.", example: "I am happy today.", exampleId: "Saya bahagia hari ini." },
@@ -178,6 +206,13 @@ export const PARTS_OF_SPEECH: PartOfSpeech[] = [
       "She runs quickly. (Dia berlari dengan cepat.)",
       "He always helps me. (Dia selalu membantu saya.)",
     ],
+    testTips: [
+      "Adverb of frequency (always, often, usually) diletakkan SEBELUM verb biasa, tapi SETELAH verb 'to be': 'She always works' / 'She is always late'.",
+      "TOEFL Writing: gunakan linking adverb (however, moreover, therefore, consequently) untuk skor coherence lebih tinggi.",
+      "Hati-hati: 'hard' (keras/sulit) vs 'hardly' (hampir tidak); 'late' vs 'lately' (akhir-akhir ini).",
+      "Adverb tidak menerangkan noun → salah: 'a quickly car' ❌ → 'a quick car' ✅.",
+      "Inversi formal (Linguaskill C1+): 'Rarely have I seen...', 'Never did he expect...'.",
+    ],
     vocab: [
       { word: "carefully", level: "A2", meaning: "dengan hati-hati", synonym: "cautiously", antonym: "carelessly", usage: "Adverb of manner.", example: "Drive carefully.", exampleId: "Berkendaralah dengan hati-hati." },
       { word: "usually", level: "A2", meaning: "biasanya", synonym: "normally", antonym: "rarely", usage: "Adverb of frequency.", example: "I usually wake up at 6.", exampleId: "Saya biasanya bangun jam 6." },
@@ -210,6 +245,13 @@ export const PARTS_OF_SPEECH: PartOfSpeech[] = [
     examples: [
       "The book is on the table. (Buku itu di atas meja.)",
       "We meet at 8 a.m. (Kami bertemu jam 8 pagi.)",
+    ],
+    testTips: [
+      "Preposition of time: AT (jam, waktu spesifik), ON (hari/tanggal), IN (bulan, tahun, abad).",
+      "TOEFL favorit: 'depend ON', 'consist OF', 'differ FROM', 'similar TO', 'responsible FOR', 'interested IN'.",
+      "'Despite' & 'in spite of' diikuti NOUN/V-ing, bukan klausa. 'Although' diikuti klausa lengkap (S+V).",
+      "Setelah preposition, verb selalu V-ing: 'good at swimming' ✅, bukan 'good at swim' ❌.",
+      "Hindari preposition di akhir kalimat dalam tulisan formal (tapi OK di lisan).",
     ],
     vocab: [
       { word: "between", level: "A2", meaning: "di antara (dua)", synonym: "amid", antonym: "—", usage: "Untuk dua benda/orang.", example: "Sit between us.", exampleId: "Duduklah di antara kami." },
@@ -244,6 +286,13 @@ export const PARTS_OF_SPEECH: PartOfSpeech[] = [
       "I was tired, but I kept working. (Saya lelah, tetapi saya terus bekerja.)",
       "She left because it was late. (Dia pergi karena sudah larut.)",
     ],
+    testTips: [
+      "FANBOYS (For-And-Nor-But-Or-Yet-So) selalu pakai koma sebelum­nya saat menggabungkan 2 klausa lengkap.",
+      "TOEFL Writing: variasikan conjunction. Jangan ulang 'and' / 'but' terus-menerus.",
+      "'Because' (sebab) vs 'because of' (karena + noun): 'because it rained' vs 'because of the rain'.",
+      "'Although/though/even though' = kontras + klausa. 'Despite/in spite of' = kontras + noun/V-ing.",
+      "Correlative harus paralel: 'not only smart but also kind' ✅ (bukan 'not only smart but also kindness' ❌).",
+    ],
     vocab: [
       { word: "because", level: "A2", meaning: "karena", synonym: "since", antonym: "although", usage: "Subordinating, sebab.", example: "I left because I was tired.", exampleId: "Saya pergi karena saya lelah." },
       { word: "although", level: "B1", meaning: "meskipun", synonym: "though", antonym: "because", usage: "Subordinating, kontras.", example: "Although it rained, we went out.", exampleId: "Meskipun hujan, kami tetap keluar." },
@@ -276,6 +325,13 @@ export const PARTS_OF_SPEECH: PartOfSpeech[] = [
     examples: [
       "Wow! That's amazing. (Wah! Itu luar biasa.)",
       "Oops, I dropped it. (Ups, saya menjatuhkannya.)",
+    ],
+    testTips: [
+      "Interjection JARANG keluar di TOEFL/Linguaskill writing — hindari di esai akademik.",
+      "Berguna di Speaking test untuk terdengar natural: 'Well,...', 'Oh, I see', 'Hmm, let me think'.",
+      "Filler word (well, you know, like) boleh sesekali, tapi jangan berlebihan saat speaking test.",
+      "Tanda baca: gunakan tanda seru (!) untuk emosi kuat, koma (,) untuk emosi ringan.",
+      "Konteks penting: 'Oh!' bisa berarti kaget, kecewa, atau paham — tergantung intonasi.",
     ],
     vocab: [
       { word: "wow", level: "A2", meaning: "wah", synonym: "amazing", antonym: "—", usage: "Mengekspresikan kekaguman.", example: "Wow! What a view!", exampleId: "Wah! Pemandangan yang indah!" },

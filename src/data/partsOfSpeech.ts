@@ -21,6 +21,7 @@ export interface PartOfSpeech {
   usage: string;
   rules: string[];
   examples: string[];
+  testTips: string[];
   vocab: VocabRow[];
 }
 

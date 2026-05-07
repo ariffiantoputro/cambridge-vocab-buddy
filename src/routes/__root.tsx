@@ -72,14 +72,18 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
     meta: [
       { charSet: "utf-8" },
       { name: "viewport", content: "width=device-width, initial-scale=1" },
-      { title: "Lovable App" },
-      { name: "description", content: "Lovable Generated Project" },
+      { title: "bab 2 Cambridge English" },
+      { name: "description", content: "Cambridge English Master is an app for English learners, offering a comprehensive dictionary and translation tool." },
       { name: "author", content: "Lovable" },
-      { property: "og:title", content: "Lovable App" },
-      { property: "og:description", content: "Lovable Generated Project" },
+      { property: "og:title", content: "bab 2 Cambridge English" },
+      { property: "og:description", content: "Cambridge English Master is an app for English learners, offering a comprehensive dictionary and translation tool." },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary" },
       { name: "twitter:site", content: "@Lovable" },
+      { name: "twitter:title", content: "bab 2 Cambridge English" },
+      { name: "twitter:description", content: "Cambridge English Master is an app for English learners, offering a comprehensive dictionary and translation tool." },
+      { property: "og:image", content: "https://pub-bb2e103a32db4e198524a2e9ed8f35b4.r2.dev/3718843a-303a-4bdf-9b30-0a26bb1f2333/id-preview-d417b932--ef664ee0-2888-4152-a1ba-72a67bcf0fd5.lovable.app-1778153388563.png" },
+      { name: "twitter:image", content: "https://pub-bb2e103a32db4e198524a2e9ed8f35b4.r2.dev/3718843a-303a-4bdf-9b30-0a26bb1f2333/id-preview-d417b932--ef664ee0-2888-4152-a1ba-72a67bcf0fd5.lovable.app-1778153388563.png" },
     ],
     links: [
       {

@@ -355,13 +355,16 @@ function AddDialog({
   const [usage, setUsage] = useState(initial?.usage || "");
   const [example, setExample] = useState(initial?.example || "");
   const [exampleId, setExampleId] = useState(initial?.exampleId || "");
+  const [autoUsage, setAutoUsage] = useState(true);
 
   // auto detect on word change (when not manual override)
   const handleWord = (w: string) => {
     setWord(w);
     if (!manual && w.trim()) {
-      setAutoPos(detectPos(w));
+      const p = detectPos(w);
+      setAutoPos(p);
       setAutoLevel(detectLevel(w));
+      if (autoUsage && !initial) setUsage(detectUsage(w, p));
     }
   };
 
@@ -406,7 +409,19 @@ function AddDialog({
           <div className="mt-3 space-y-2">
             <Field label="Synonym"><input value={synonym} onChange={(e) => setSynonym(e.target.value)} className="input" /></Field>
             <Field label="Antonym"><input value={antonym} onChange={(e) => setAntonym(e.target.value)} className="input" /></Field>
-            <Field label="Penjelasan penggunaan"><input value={usage} onChange={(e) => setUsage(e.target.value)} className="input" /></Field>
+            <Field label="Penjelasan penggunaan (opsional, auto-detect)">
+              <div className="flex gap-2">
+                <input value={usage} onChange={(e) => { setUsage(e.target.value); setAutoUsage(false); }} className="input" placeholder="e.g. Noun abstrak..." />
+                <button
+                  type="button"
+                  onClick={() => { setUsage(detectUsage(word, autoPos)); setAutoUsage(true); }}
+                  className="whitespace-nowrap rounded-lg border px-2 text-xs"
+                  title="Deteksi otomatis"
+                >
+                  Auto
+                </button>
+              </div>
+            </Field>
             <Field label="Contoh kalimat (English) — opsional">
               <input value={example} onChange={(e) => setExample(e.target.value)} className="input" placeholder="e.g. She got an opportunity to study abroad." />
             </Field>

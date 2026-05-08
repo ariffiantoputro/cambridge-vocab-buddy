@@ -1,6 +1,7 @@
 import { createFileRoute } from "@tanstack/react-router";
+import { Link } from "@tanstack/react-router";
 import { useRef, useState } from "react";
-import { ChevronDown } from "lucide-react";
+import { ChevronDown, Search } from "lucide-react";
 import { PARTS_OF_SPEECH, LEVEL_COLORS, type PartOfSpeech } from "@/data/partsOfSpeech";
 
 export const Route = createFileRoute("/")({
@@ -21,6 +22,12 @@ function Index() {
           <p className="mt-3 text-sm text-muted-foreground md:text-base">
             8 Jenis Kata dalam Bahasa Inggris · Level A2 – C2
           </p>
+          <Link
+            to="/vocab"
+            className="mt-5 inline-flex items-center gap-2 rounded-full bg-primary px-5 py-2.5 text-sm font-semibold text-primary-foreground shadow-md hover:bg-primary/90"
+          >
+            <Search className="h-4 w-4" /> Buka Kamus & Tambah Kosakata
+          </Link>
         </header>
 
         <section className="mb-10 rounded-2xl border bg-card p-6 shadow-sm md:p-8">

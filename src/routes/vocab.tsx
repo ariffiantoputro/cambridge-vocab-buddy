@@ -439,7 +439,7 @@ function Modal({ title, onClose, children }: { title: string; onClose: () => voi
         </div>
         {children}
       </div>
-      <style>{`.input{width:100%;border:1px solid hsl(var(--border));background:hsl(var(--background));border-radius:.5rem;padding:.5rem .75rem;font-size:.875rem;outline:none}.input:focus{box-shadow:0 0 0 2px hsl(var(--primary)/.4)}`}</style>
+      <style>{`.input{width:100%;border:1px solid var(--border, #e5e7eb);background:var(--background, #fff);color:var(--foreground, #111);border-radius:.5rem;padding:.5rem .75rem;font-size:.875rem;outline:none}.input:focus{box-shadow:0 0 0 2px color-mix(in oklab, var(--primary, #3b82f6) 40%, transparent)}`}</style>
     </div>
   );
 }

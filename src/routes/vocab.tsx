@@ -1,12 +1,14 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { useMemo, useState } from "react";
-import { Search, Plus, Pencil, Trash2, Upload, X, ArrowLeft } from "lucide-react";
+import { Search, Plus, Pencil, Trash2, Upload, X, ArrowLeft, Download, RotateCcw, Eye } from "lucide-react";
 import { PARTS_OF_SPEECH, LEVEL_COLORS, type Level, type VocabRow } from "@/data/partsOfSpeech";
 import {
   useUserVocab,
   detectPos,
   detectLevel,
+  detectUsage,
   parseBulk,
+  seedKey,
   type PosId,
   type UserVocab,
 } from "@/lib/vocabStore";
@@ -23,10 +25,15 @@ type Combined = VocabRow & {
   posName: string;
   source: "seed" | "user";
   id?: string;
+  seedKey?: string;
 };
 
 function VocabPage() {
-  const { list: userList, add, addMany, update, remove } = useUserVocab();
+  const {
+    list: userList, overrides, hidden,
+    add, addMany, update, remove,
+    overrideSeed, resetSeed, hideSeed,
+  } = useUserVocab();
 
   const [query, setQuery] = useState("");
   const [letter, setLetter] = useState<string>("");
@@ -36,15 +43,25 @@ function VocabPage() {
   const [showAdd, setShowAdd] = useState(false);
   const [showBulk, setShowBulk] = useState(false);
   const [editing, setEditing] = useState<UserVocab | null>(null);
+  const [editingSeed, setEditingSeed] = useState<{ key: string; row: Combined } | null>(null);
+  const [showExport, setShowExport] = useState(false);
 
   const all: Combined[] = useMemo(() => {
     const seeds: Combined[] = PARTS_OF_SPEECH.flatMap((p) =>
-      p.vocab.map((v) => ({
-        ...v,
-        pos: p.id as PosId,
-        posName: p.name,
-        source: "seed" as const,
-      })),
+      p.vocab.map((v) => {
+        const key = seedKey(p.id, v.word);
+        const ov = overrides[key] || {};
+        return {
+          ...v,
+          ...ov,
+          pos: (ov.pos as PosId) || (p.id as PosId),
+          posName:
+            PARTS_OF_SPEECH.find((x) => x.id === ((ov.pos as PosId) || p.id))?.name ||
+            p.name,
+          source: "seed" as const,
+          seedKey: key,
+        };
+      }).filter((v) => !hidden.includes(v.seedKey!)),
     );
     const users: Combined[] = userList.map((u) => ({
       ...u,
@@ -52,7 +69,7 @@ function VocabPage() {
       source: "user" as const,
     }));
     return [...users, ...seeds];
-  }, [userList]);
+  }, [userList, overrides, hidden]);
 
   const filtered = useMemo(() => {
     const q = query.trim().toLowerCase();
@@ -129,6 +146,13 @@ function VocabPage() {
             className="inline-flex items-center gap-1 rounded-lg border bg-card px-3 py-2 text-sm font-semibold hover:bg-muted"
           >
             <Upload className="h-4 w-4" /> Bulk
+          </button>
+          <button
+            onClick={() => setShowExport(true)}
+            className="inline-flex items-center gap-1 rounded-lg border bg-card px-3 py-2 text-sm font-semibold hover:bg-muted"
+            title="Export semua data sebagai JSON"
+          >
+            <Download className="h-4 w-4" /> Export
           </button>
         </div>
 
@@ -214,7 +238,34 @@ function VocabPage() {
                         </button>
                       </div>
                     ) : (
-                      <span className="text-[10px] text-muted-foreground">seed</span>
+                      <div className="flex gap-1">
+                        <button
+                          onClick={() => setEditingSeed({ key: v.seedKey!, row: v })}
+                          className="rounded p-1 hover:bg-muted"
+                          title="Edit (tersimpan sebagai override)"
+                        >
+                          <Pencil className="h-3.5 w-3.5" />
+                        </button>
+                        {overrides[v.seedKey!] && (
+                          <button
+                            onClick={() => resetSeed(v.seedKey!)}
+                            className="rounded p-1 hover:bg-muted"
+                            title="Reset ke default"
+                          >
+                            <RotateCcw className="h-3.5 w-3.5" />
+                          </button>
+                        )}
+                        <button
+                          onClick={() => {
+                            if (confirm(`Sembunyikan "${v.word}" dari daftar?`))
+                              hideSeed(v.seedKey!);
+                          }}
+                          className="rounded p-1 text-red-500 hover:bg-red-500/10"
+                          title="Sembunyikan"
+                        >
+                          <Trash2 className="h-3.5 w-3.5" />
+                        </button>
+                      </div>
                     )}
                   </td>
                 </tr>
@@ -250,6 +301,20 @@ function VocabPage() {
           }}
         />
       )}
+      {editingSeed && (
+        <AddDialog
+          initial={{
+            id: "seed",
+            createdAt: 0,
+            ...editingSeed.row,
+          } as UserVocab}
+          onClose={() => setEditingSeed(null)}
+          onSave={(v) => {
+            overrideSeed(editingSeed.key, v);
+            setEditingSeed(null);
+          }}
+        />
+      )}
       {showBulk && (
         <BulkDialog
           onClose={() => setShowBulk(false)}
@@ -257,6 +322,12 @@ function VocabPage() {
             addMany(rows);
             setShowBulk(false);
           }}
+        />
+      )}
+      {showExport && (
+        <ExportDialog
+          data={{ user: userList, overrides, hidden, seeds: PARTS_OF_SPEECH }}
+          onClose={() => setShowExport(false)}
         />
       )}
     </div>

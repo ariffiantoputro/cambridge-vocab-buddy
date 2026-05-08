@@ -467,7 +467,61 @@ function BulkDialog({
   onSave: (rows: Omit<UserVocab, "id" | "createdAt">[]) => void;
 }) {
   const [text, setText] = useState("");
-  const preview = useMemo(() => parseBulk(text), [text]);
+  const [stage, setStage] = useState<"input" | "review">("input");
+  const [rows, setRows] = useState<Omit<UserVocab, "id" | "createdAt">[]>([]);
+  const parsed = useMemo(() => parseBulk(text), [text]);
+
+  const updateRow = (i: number, patch: Partial<(typeof rows)[number]>) =>
+    setRows((r) => r.map((x, idx) => (idx === i ? { ...x, ...patch } : x)));
+  const removeRow = (i: number) => setRows((r) => r.filter((_, idx) => idx !== i));
+
+  if (stage === "review") {
+    return (
+      <Modal title={`Pratinjau & Koreksi (${rows.length} kata)`} onClose={onClose}>
+        <p className="mb-2 text-xs text-muted-foreground">
+          Edit setiap baris sebelum dikonfirmasi. Klik 🗑 untuk membuang baris yang salah.
+        </p>
+        <div className="max-h-[55vh] space-y-2 overflow-auto pr-1">
+          {rows.map((r, i) => (
+            <div key={i} className="rounded-lg border bg-muted/20 p-2 text-xs">
+              <div className="mb-1 flex items-center justify-between">
+                <strong className="text-sm">#{i + 1} {r.word}</strong>
+                <button onClick={() => removeRow(i)} className="text-red-500" title="Buang">
+                  <Trash2 className="h-3.5 w-3.5" />
+                </button>
+              </div>
+              <div className="grid grid-cols-2 gap-1.5">
+                <input className="input" value={r.word} onChange={(e) => updateRow(i, { word: e.target.value })} placeholder="word" />
+                <input className="input" value={r.meaning} onChange={(e) => updateRow(i, { meaning: e.target.value })} placeholder="arti" />
+                <select className="input" value={r.level} onChange={(e) => updateRow(i, { level: e.target.value as Level })}>
+                  {LEVELS.map((l) => <option key={l}>{l}</option>)}
+                </select>
+                <select className="input" value={r.pos} onChange={(e) => updateRow(i, { pos: e.target.value as PosId, usage: detectUsage(r.word, e.target.value as PosId) })}>
+                  {PARTS_OF_SPEECH.map((p) => <option key={p.id} value={p.id}>{p.name}</option>)}
+                </select>
+                <input className="input col-span-2" value={r.usage} onChange={(e) => updateRow(i, { usage: e.target.value })} placeholder="penggunaan (auto)" />
+                <input className="input col-span-2" value={r.example} onChange={(e) => updateRow(i, { example: e.target.value })} placeholder="contoh kalimat (opsional)" />
+                <input className="input col-span-2" value={r.exampleId} onChange={(e) => updateRow(i, { exampleId: e.target.value })} placeholder="translate kalimat (opsional)" />
+              </div>
+            </div>
+          ))}
+          {rows.length === 0 && (
+            <div className="p-4 text-center text-muted-foreground">Tidak ada baris.</div>
+          )}
+        </div>
+        <div className="flex justify-end gap-2 pt-3">
+          <button onClick={() => setStage("input")} className="rounded-lg border px-4 py-2 text-sm">← Kembali</button>
+          <button
+            disabled={rows.length === 0}
+            onClick={() => onSave(rows.filter((r) => r.word.trim() && r.meaning.trim()))}
+            className="rounded-lg bg-primary px-4 py-2 text-sm font-semibold text-primary-foreground disabled:opacity-50"
+          >
+            ✓ Konfirmasi & Tambahkan
+          </button>
+        </div>
+      </Modal>
+    );
+  }
   return (
     <Modal title="Tambah Banyak Kata Sekaligus" onClose={onClose}>
       <div className="space-y-3">
@@ -485,10 +539,10 @@ function BulkDialog({
           className="input font-mono text-xs"
           placeholder={"opportunity - kesempatan\nrun | berlari | I run every morning. | Saya berlari setiap pagi.\nbeautiful - cantik"}
         />
-        {preview.length > 0 && (
+        {parsed.length > 0 && (
           <div className="max-h-48 overflow-auto rounded-lg border bg-muted/30 p-2 text-xs">
-            <div className="mb-1 font-semibold">Preview ({preview.length} kata):</div>
-            {preview.map((p, i) => (
+            <div className="mb-1 font-semibold">Hasil parsing ({parsed.length} kata):</div>
+            {parsed.map((p, i) => (
               <div key={i} className="flex flex-wrap gap-2 border-b py-1 last:border-0">
                 <strong>{p.word}</strong>
                 <span className={`rounded border px-1 text-[10px] ${LEVEL_COLORS[p.level]}`}>{p.level}</span>
@@ -501,13 +555,49 @@ function BulkDialog({
         <div className="flex justify-end gap-2 pt-2">
           <button onClick={onClose} className="rounded-lg border px-4 py-2 text-sm">Batal</button>
           <button
-            disabled={preview.length === 0}
-            onClick={() => onSave(preview)}
+            disabled={parsed.length === 0}
+            onClick={() => { setRows(parsed); setStage("review"); }}
             className="rounded-lg bg-primary px-4 py-2 text-sm font-semibold text-primary-foreground disabled:opacity-50"
           >
-            Tambah {preview.length} Kata
+            Lanjut ke Pratinjau →
           </button>
         </div>
+      </div>
+    </Modal>
+  );
+}
+
+// =================== Export Dialog ===================
+
+function ExportDialog({ data, onClose }: { data: unknown; onClose: () => void }) {
+  const json = useMemo(() => JSON.stringify(data, null, 2), [data]);
+  const download = (filename: string, content: string, mime: string) => {
+    const blob = new Blob([content], { type: mime });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement("a");
+    a.href = url; a.download = filename; a.click();
+    URL.revokeObjectURL(url);
+  };
+  return (
+    <Modal title="Export Semua Data" onClose={onClose}>
+      <p className="mb-2 text-xs text-muted-foreground">
+        Berisi seluruh kosakata seed (8 part of speech), kata milikmu, override, dan kata yang disembunyikan.
+        Salin JSON di bawah, atau download sebagai file <code>.json</code>.
+      </p>
+      <textarea readOnly value={json} rows={14} className="input font-mono text-[11px]" onFocus={(e) => e.currentTarget.select()} />
+      <div className="flex justify-end gap-2 pt-3">
+        <button
+          onClick={() => { navigator.clipboard.writeText(json); }}
+          className="rounded-lg border px-4 py-2 text-sm"
+        >
+          📋 Salin JSON
+        </button>
+        <button
+          onClick={() => download("cambridge-vocab.json", json, "application/json")}
+          className="rounded-lg bg-primary px-4 py-2 text-sm font-semibold text-primary-foreground"
+        >
+          ⬇ Download .json
+        </button>
       </div>
     </Modal>
   );

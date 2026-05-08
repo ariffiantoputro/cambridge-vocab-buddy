@@ -18,6 +18,8 @@ export interface UserVocab extends VocabRow {
 }
 
 const KEY = "cambridge_user_vocab_v1";
+const OVERRIDE_KEY = "cambridge_seed_overrides_v1";
+const HIDDEN_KEY = "cambridge_seed_hidden_v1";
 
 function read(): UserVocab[] {
   if (typeof window === "undefined") return [];
@@ -32,16 +34,42 @@ function write(list: UserVocab[]) {
   window.dispatchEvent(new Event("vocab:changed"));
 }
 
+export type SeedOverrides = Record<string, Partial<VocabRow> & { pos?: PosId }>;
+function readOverrides(): SeedOverrides {
+  if (typeof window === "undefined") return {};
+  try { return JSON.parse(localStorage.getItem(OVERRIDE_KEY) || "{}"); } catch { return {}; }
+}
+function writeOverrides(o: SeedOverrides) {
+  localStorage.setItem(OVERRIDE_KEY, JSON.stringify(o));
+  window.dispatchEvent(new Event("vocab:changed"));
+}
+function readHidden(): string[] {
+  if (typeof window === "undefined") return [];
+  try { return JSON.parse(localStorage.getItem(HIDDEN_KEY) || "[]"); } catch { return []; }
+}
+function writeHidden(h: string[]) {
+  localStorage.setItem(HIDDEN_KEY, JSON.stringify(h));
+  window.dispatchEvent(new Event("vocab:changed"));
+}
+
+export function seedKey(pos: string, word: string) {
+  return `${pos}::${word.toLowerCase()}`;
+}
+
 export function useUserVocab() {
   const [list, setList] = useState<UserVocab[]>([]);
+  const [overrides, setOverrides] = useState<SeedOverrides>({});
+  const [hidden, setHidden] = useState<string[]>([]);
   useEffect(() => {
-    setList(read());
-    const h = () => setList(read());
+    setList(read()); setOverrides(readOverrides()); setHidden(readHidden());
+    const h = () => { setList(read()); setOverrides(readOverrides()); setHidden(readHidden()); };
     window.addEventListener("vocab:changed", h);
     return () => window.removeEventListener("vocab:changed", h);
   }, []);
   return {
     list,
+    overrides,
+    hidden,
     add: (v: Omit<UserVocab, "id" | "createdAt">) => {
       const all = read();
       all.push({ ...v, id: crypto.randomUUID(), createdAt: Date.now() });
@@ -62,6 +90,20 @@ export function useUserVocab() {
       write(read().filter((v) => v.id !== id));
     },
     clear: () => write([]),
+    overrideSeed: (key: string, patch: Partial<VocabRow> & { pos?: PosId }) => {
+      const o = readOverrides();
+      o[key] = { ...(o[key] || {}), ...patch };
+      writeOverrides(o);
+    },
+    resetSeed: (key: string) => {
+      const o = readOverrides(); delete o[key]; writeOverrides(o);
+    },
+    hideSeed: (key: string) => {
+      const h = readHidden(); if (!h.includes(key)) h.push(key); writeHidden(h);
+    },
+    unhideSeed: (key: string) => {
+      writeHidden(readHidden().filter((k) => k !== key));
+    },
   };
 }
 

@@ -135,6 +135,46 @@ export function detectLevel(wordRaw: string): Level {
   return "C2";
 }
 
+// Heuristic usage description per POS / suffix
+export function detectUsage(wordRaw: string, pos?: PosId): string {
+  const w = wordRaw.trim().toLowerCase();
+  // check seed dataset first for an existing usage hint
+  for (const p of PARTS_OF_SPEECH) {
+    const hit = p.vocab.find((v) => v.word.toLowerCase() === w);
+    if (hit && hit.usage) return hit.usage;
+  }
+  const p: PosId = pos || detectPos(w);
+  switch (p) {
+    case "noun":
+      if (/(tion|sion|ment|ness|ity|ism|ance|ence)$/.test(w))
+        return "Noun abstrak — sering muncul di TOEFL/Linguaskill akademik.";
+      if (/(er|or|ist)$/.test(w))
+        return "Noun pelaku (orang yang melakukan sesuatu).";
+      return "Kata benda — bisa jadi subjek atau objek kalimat.";
+    case "verb":
+      if (/ing$/.test(w)) return "Bentuk -ing (gerund / present participle).";
+      if (/ed$/.test(w)) return "Bentuk past / past participle.";
+      if (/(ize|ise|ate|ify|en)$/.test(w)) return "Verb pembentuk aksi/proses.";
+      return "Kata kerja — menyatakan aksi atau keadaan.";
+    case "adjective":
+      if (/(ous|ful|ive|al|ic)$/.test(w)) return "Adjective deskriptif.";
+      if (/(less)$/.test(w)) return "Adjective negatif (tanpa…).";
+      if (/(able|ible)$/.test(w)) return "Adjective bermakna 'dapat di-…'.";
+      return "Kata sifat — menjelaskan noun.";
+    case "adverb":
+      return "Adverb — menjelaskan verb/adjective/adverb lain. Posisi fleksibel.";
+    case "pronoun":
+      return "Pronoun — pengganti noun untuk menghindari pengulangan.";
+    case "preposition":
+      return "Preposition — menghubungkan noun/pronoun dengan kata lain (waktu, tempat, arah).";
+    case "conjunction":
+      return "Conjunction — penghubung klausa/kata. Perhatikan koma & FANBOYS.";
+    case "interjection":
+      return "Interjection — ungkapan emosi singkat. Diakhiri tanda seru.";
+  }
+  return "";
+}
+
 /**
  * Parse bulk text. Supports:
  *   - one word per line
@@ -170,7 +210,7 @@ export function parseBulk(text: string): Omit<UserVocab, "id" | "createdAt">[] {
         pos,
         synonym: "",
         antonym: "",
-        usage: "",
+        usage: detectUsage(word, pos),
         example,
         exampleId,
       };
